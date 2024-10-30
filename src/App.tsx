@@ -39,11 +39,13 @@ function Cadeaux() {
   function compute() {
     const donneursTries = Object.values(Object.groupBy(membres, m => m.famille)).sort((a, b) => b.length - a.length).flat();
     const receveurs = [...membres];
+    const randomItem = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
 
     const resultat = donneursTries.map(m => {
-      const receveursEligibles = receveurs.filter(x => x !== m);
-      const receveurEluIndex = Math.floor(Math.random() * receveursEligibles.length);
-      const [receveur] = receveurs.splice(receveurEluIndex, 1);
+      const receveursEligibles = receveurs.filter(x => x !== m && x.famille !== m.famille);
+      const receveur = randomItem(receveursEligibles.length ? receveursEligibles : receveurs);
+      const receveurToDelete = receveurs.indexOf(receveur);
+      receveurs.splice(receveurToDelete, 1);
       return { donneur: m, receveur };
     });
 
