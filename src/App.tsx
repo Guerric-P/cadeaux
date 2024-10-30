@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import './App.css';
+import React from 'react';
+import { Membre } from './model/membre';
 
 function Cadeaux() {
-  const [membres, setMembres] = useState([
+  const [membres, setMembres] = useState<Membre[]>([
     {
       nom: 'Guerric',
       famille: 'Prunet',
@@ -32,10 +34,10 @@ function Cadeaux() {
       famille: 'Garcia',
     },
   ]);
-  const [resultat, setResultat] = useState([]);
+  const [resultat, setResultat] = useState<{ donneur: Membre, receveur: Membre }[]>([]);
 
   function compute() {
-    const resultat = [];
+    const resultat: { donneur: Membre, receveur: Membre }[] = [];
 
     for (const membre of membres) {
       const eligibles = membres.filter(
@@ -110,7 +112,7 @@ function Cadeaux() {
         </tr>
       </tfoot>
     </table>,
-    resultat.length ? <table style={{width: '100%'}}>
+    resultat.length ? <table style={{ width: '100%' }}>
       <caption>Résultat</caption>
 
       <thead>
