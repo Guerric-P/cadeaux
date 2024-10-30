@@ -54,77 +54,84 @@ function Cadeaux() {
     }
   }
 
-  return (
-    <>
-      <table>
-        <caption>Cadeaux</caption>
-        <thead>
-          <tr>
-            <th scope="col">Nom</th>
-            <th scope="col">Famille</th>
+  return [
+    <table key={0}>
+      <caption>Cadeaux</caption>
+      <thead>
+        <tr>
+          <th scope="col">Nom</th>
+          <th scope="col">Famille</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {membres.map((m, i) => (
+          <tr key={i}>
+            <td>
+              <input
+                value={m.nom}
+                onChange={(event) => {
+                  const newMembres = [...membres];
+                  newMembres[i].nom = event.target.value;
+                  setMembres(newMembres);
+                }}
+              />
+            </td>
+            <td>
+              <input
+                value={m.famille}
+                onChange={(event) => {
+                  const newMembres = [...membres];
+                  newMembres[i].famille = event.target.value;
+                  setMembres(newMembres);
+                }}
+              />
+            </td>
+            <td>
+              <button onClick={() => {
+                setMembres(membres.filter((_, idx) => idx !== i))
+              }}>Supprimer</button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {membres.map((m, i) => (
-            <tr key={i}>
-              <td>
-                <input
-                  value={m.nom}
-                  onChange={(event) => {
-                    const newMembres = [...membres];
-                    newMembres[i].nom = event.target.value;
-                    setMembres(newMembres);
-                  }}
-                />
-              </td>
-              <td>
-                <input
-                  value={m.famille}
-                  onChange={(event) => {
-                    const newMembres = [...membres];
-                    newMembres[i].famille = event.target.value;
-                    setMembres(newMembres);
-                  }}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <th scope="row" colSpan={2}>
-              <button
-                onClick={() =>
-                  setMembres([...membres, { nom: '', famille: '' }])
-                }
-              >
-                Ajouter un membre
-              </button>
-            </th>
-            <button onClick={compute}>Calculer</button>
-          </tr>
-        </tfoot>
-      </table>
+        ))}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th scope="row" colSpan={2}>
+            <button
+              onClick={() =>
+                setMembres([...membres, { nom: '', famille: '' }])
+              }
+            >
+              Ajouter un membre
+            </button>
+          </th>
+          <button onClick={compute}>Bouléguer</button>
+        </tr>
+      </tfoot>
+    </table>,
+    resultat.length ? <table style={{width: '100%'}}>
+      <caption>Résultat</caption>
 
-      <table>
-        <caption>Résultat</caption>
+      <thead>
+        <tr>
+          <th scope="col">Donneur</th>
+          <th scope="col">Receveur</th>
+        </tr>
+      </thead>
 
-        <thead>
-          <tr>
-            <th scope="col">Donneur</th>
-            <th scope="col">Receveur</th>
-          </tr>
-        </thead>
-
-        {resultat.map((r, i) => (
+      {
+        resultat.map((r, i) => (
           <tr key={i}>
             <td>{r.donneur.nom}</td>
             <td>{r.receveur.nom}</td>
           </tr>
-        ))}
-      </table>
-    </>
-  );
+        ))
+      }
+    </table> : <></>
+  ]
+
+
 }
 
 export default Cadeaux;
