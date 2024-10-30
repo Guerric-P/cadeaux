@@ -37,23 +37,17 @@ function Cadeaux() {
   const [resultat, setResultat] = useState<{ donneur: Membre, receveur: Membre }[]>([]);
 
   function compute() {
-    const resultat: { donneur: Membre, receveur: Membre }[] = [];
+    const donneursTries = Object.values(Object.groupBy(membres, m => m.famille)).sort((a, b) => b.length - a.length).flat();
+    const receveurs = [...membres];
 
-    for (const membre of membres) {
-      const eligibles = membres.filter(
-        (x) =>
-          x.famille !== membre.famille && !resultat.some((r) => r.donneur === x)
-      );
-      const elu = eligibles[Math.floor(Math.random() * eligibles.length)];
+    const resultat = donneursTries.map(m => {
+      const receveursEligibles = receveurs.filter(x => x !== m);
+      const receveurEluIndex = Math.floor(Math.random() * receveursEligibles.length);
+      const [receveur] = receveurs.splice(receveurEluIndex, 1);
+      return { donneur: m, receveur };
+    });
 
-      if (elu) resultat.push({ donneur: elu, receveur: membre });
-    }
-
-    if (resultat.length === membres.length) {
-      setResultat(resultat);
-    } else {
-      compute();
-    }
+    setResultat(resultat);
   }
 
   return [
