@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './App.css';
 import React from 'react';
 import { Membre } from './model/membre';
+import { GraphNode } from './model/graph-node';
 
 function Cadeaux() {
   const [membres, setMembres] = useState<Membre[]>([
@@ -35,21 +36,53 @@ function Cadeaux() {
     },
   ]);
   const [resultat, setResultat] = useState<{ donneur: Membre, receveur: Membre }[]>([]);
+  const [erreur, setErreur] = useState(false);
 
   function compute() {
-    const donneursTries = Object.values(Object.groupBy(membres, m => m.famille)).sort((a, b) => b.length - a.length).flat();
-    const receveurs = [...membres];
-    const randomItem = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
+    const graphNodes: GraphNode[] = membres.map(m => ({ membre: m, linked: [] }));
+    graphNodes.forEach(n => n.linked = graphNodes.filter(x => x.membre !== n.membre && x.membre.famille !== n.membre.famille));
+    const [initialNode] = graphNodes;
 
-    const resultat = donneursTries.map(m => {
-      const receveursEligibles = receveurs.filter(x => x !== m && x.famille !== m.famille);
-      const receveur = randomItem(receveursEligibles.length ? receveursEligibles : receveurs);
-      const receveurToDelete = receveurs.indexOf(receveur);
-      receveurs.splice(receveurToDelete, 1);
-      return { donneur: m, receveur };
-    });
+    const path = traverseGraph([initialNode], graphNodes.length);
 
-    setResultat(resultat);
+    if (path.length === graphNodes.length) {
+      const solution = path.map((x, i, { [i - 1]: last }) => last && { donneur: last.membre, receveur: x.membre }).filter(x => x);
+      setResultat(solution);
+      setErreur(false);
+    } else {
+      setResultat([]);
+      setErreur(true);
+    }
+  }
+
+  function shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i >= 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  function traverseGraph(path: GraphNode[], finalLength: number): GraphNode[] {
+    if (path.length === finalLength)
+      return path;
+    const { [path.length - 1]: lastNode } = path;
+    const filteredLinked = lastNode.linked.filter(x => !path.includes(x));
+    if (filteredLinked.length === 1) {
+      const result = traverseGraph([...path, filteredLinked[0]], finalLength);
+      if (result.length === finalLength)
+        return result;
+    }
+    else {
+      const indexes = Object.keys(filteredLinked);
+      shuffleArray(indexes);
+      for (const i of indexes) {
+        const result = traverseGraph([...path, filteredLinked[i]], finalLength);
+        if (result.length === finalLength)
+          return result;
+      }
+    }
+
+    return path.filter(x => x !== lastNode);
   }
 
   return [
@@ -126,10 +159,9 @@ function Cadeaux() {
           </tr>
         ))
       }
-    </table> : <></>
+    </table> : <></>,
+    erreur ? <div>Aucune répartition n'existe pour les contraintes données.</div> : <></>
   ]
-
-
 }
 
 export default Cadeaux;
