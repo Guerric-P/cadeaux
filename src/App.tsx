@@ -46,7 +46,7 @@ function Cadeaux() {
 
     const path = traverseGraph([initialNode], graphNodes.length);
 
-    if (path.length === graphNodes.length) {
+    if (path.length === graphNodes.length + 1) {
       const solution = path.map((x, i, { [i - 1]: last }) => last && { donneur: last.membre, receveur: x.membre }).filter(x => x);
       setResultat(solution);
       setErreur(false);
@@ -57,25 +57,25 @@ function Cadeaux() {
   }
 
   function traverseGraph(path: GraphNode[], finalLength: number): GraphNode[] {
-    if (path.length === finalLength)
-      return path;
-    const { [path.length - 1]: lastNode } = path;
-    const filteredLinked = lastNode.linked.filter(x => !path.includes(x));
-    if (filteredLinked.length === 1) {
-      const result = traverseGraph([...path, filteredLinked[0]], finalLength);
-      if (result.length === finalLength)
-        return result;
-    }
-    else {
-      const indexes = Object.keys(filteredLinked);
-      shuffleArray(indexes);
-      for (const i of indexes) {
-        const result = traverseGraph([...path, filteredLinked[i]], finalLength);
-        if (result.length === finalLength)
-          return result;
-      }
+    const { [0]: firstNode, [path.length - 1]: lastNode } = path;
+
+    if (path.length === finalLength) {
+      // Soit on ferme le cycle si c'est possible, sinon backtrack
+      return lastNode.linked.includes(firstNode) ? [...path, firstNode] : path.filter(x => x !== lastNode);
     }
 
+    const nodesEligibles = lastNode.linked.filter(x => !path.includes(x));
+
+    const indexes = Object.keys(nodesEligibles);
+    shuffleArray(indexes);
+    for (const i of indexes) {
+      const result = traverseGraph([...path, nodesEligibles[i]], finalLength);
+      if (result.length === finalLength + 1)
+        // Une solution existe sur le chemin courant, on la retourne
+        return result;
+    }
+
+    // Aucune solution sur le chemin courant, on backtrack
     return path.filter(x => x !== lastNode);
   }
 
