@@ -41,13 +41,9 @@ class Graph {
 
         // Trier les voisins pour favoriser ceux qui ont donné moins de cadeaux
         neighbors.sort((a, b) => {
-            if (a < this.size - 1) {
-                // Comparer les adultes
-                const giftsA = giftsGiven[a - 1] || 0; // Si a est un adulte, récupérer les cadeaux donnés
-                const giftsB = giftsGiven[b - 1] || 0; // Même chose pour b
-                return giftsA - giftsB; // Prioriser l'adulte ayant donné moins
-            }
-            return 0; // Ne pas trier si ce n'est pas un adulte
+            const giftsA = giftsGiven[a - 1] || 0; // Si a est un adulte, récupérer les cadeaux donnés
+            const giftsB = giftsGiven[b - 1] || 0; // Même chose pour b
+            return giftsA - giftsB; // Prioriser l'adulte ayant donné moins
         });
 
         // Explorer les voisins
@@ -55,11 +51,9 @@ class Graph {
             if (!visited[neighbor] && this.capacity[source][neighbor] > 0) {  // Il y a encore de la capacité
                 parent[neighbor] = source; // Sauvegarder d'où nous venons
                 if (this.dfs(neighbor, sink, parent, visited, giftsGiven)) {
-                    // Si c'est un adulte, mettre à jour le nombre de cadeaux donnés
-                    if (neighbor < this.size - 1) {
-                        const adultIndex = neighbor - 1;  // L'adulte est identifié par son index
-                        giftsGiven[adultIndex]++;  // Mettre à jour le nombre de cadeaux donnés par cet adulte
-                    }
+                    // Mettre à jour le nombre de cadeaux donnés même si ce n'est pas un adulte (on n'en sait rien)
+                    const adultIndex = neighbor - 1;  // L'adulte est identifié par son index
+                    giftsGiven[adultIndex]++;  // Mettre à jour le nombre de cadeaux donnés par cet adulte
                     return true;
                 }
             }
@@ -70,13 +64,13 @@ class Graph {
 
     // Algorithme de flux maximal (Edmonds-Karp modifié avec DFS)
     edmondsKarp(source: number, sink: number, giftsGiven: number[]) {
-        let parent = Array(this.size).fill(-1);
+        const parent = Array(this.size).fill(-1);
         let maxFlow = 0;
 
         // Tant qu'il existe un chemin augmentant
         while (true) {
             // Tableau pour marquer les nœuds visités
-            let visited = Array(this.size).fill(false);
+            const visited = Array(this.size).fill(false);
 
             // Si DFS trouve un chemin
             if (!this.dfs(source, sink, parent, visited, giftsGiven)) {
