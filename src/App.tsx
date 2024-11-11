@@ -152,8 +152,8 @@ function Cadeaux() {
         </tr>
       </tfoot>
     </table>,
-    repartitionAdultes.length ? <Resultat titre="Répartition adultes" resultat={repartitionAdultes} erreur={erreurAdultes} /> : <></>,
-    repartitionEnfants.length ? <Resultat titre="Répartition enfants" resultat={repartitionEnfants} erreur={erreurEnfants} /> : <></>,
+    <Resultat titre="Répartition adultes" resultat={repartitionAdultes} erreur={erreurAdultes} />,
+    <Resultat titre="Répartition enfants" resultat={repartitionEnfants} erreur={erreurEnfants} />,
   ]
 }
 
