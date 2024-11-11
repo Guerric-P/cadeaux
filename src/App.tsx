@@ -59,8 +59,8 @@ function Cadeaux() {
       enfant: true,
     },
   ]);
-  const [repartitionAdultes, setRepartitionAdultes] = useState<{ donneur: Membre, receveur: Membre }[]>([]);
-  const [repartitionEnfants, setRepartitionEnfants] = useState<{ donneur: Membre, receveur: Membre }[]>([]);
+  const [repartitionAdultes, setRepartitionAdultes] = useState<{ donneur: Membre, receveur: Membre }[]>();
+  const [repartitionEnfants, setRepartitionEnfants] = useState<{ donneur: Membre, receveur: Membre }[]>();
   const [erreurAdultes, setErreurAdultes] = useState(false);
   const [erreurEnfants, setErreurEnfants] = useState(false);
 
