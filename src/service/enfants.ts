@@ -27,37 +27,63 @@ class Graph {
         this.adjacencyList[to].push(from);
     }
 
-    // Algorithme BFS pour trouver un chemin augmentant dans le graphe
-    bfs(source: string | number, sink: any, parent: any[]) {
-        const visited = Array(this.size).fill(false);
-        const queue = [source];
-        visited[source] = true;
+    // Algorithme DFS pour trouver un chemin augmentant dans le graphe
+    dfs(source: number, sink: any, parent: number[], visited: boolean[], giftsGiven: number[]) {
+        // Si la source est le puits, nous avons trouvé un chemin
+        if (source === sink) {
+            return true;
+        }
 
-        while (queue.length > 0) {
-            const node = queue.shift();
+        visited[source] = true; // Marquer le nœud source comme visité
 
-            for (const neighbor of this.adjacencyList[node]) {
-                if (!visited[neighbor] && this.capacity[node][neighbor] > 0) {
-                    queue.push(neighbor);
-                    visited[neighbor] = true;
-                    parent[neighbor] = node;
+        // Explorer tous les voisins du nœud source
+        const neighbors = [...this.adjacencyList[source]];
 
-                    if (neighbor === sink) {
-                        return true;
+        // Trier les voisins pour favoriser ceux qui ont donné moins de cadeaux
+        neighbors.sort((a, b) => {
+            if (a < this.size - 1) {
+                // Comparer les adultes
+                const giftsA = giftsGiven[a - 1] || 0; // Si a est un adulte, récupérer les cadeaux donnés
+                const giftsB = giftsGiven[b - 1] || 0; // Même chose pour b
+                return giftsA - giftsB; // Prioriser l'adulte ayant donné moins
+            }
+            return 0; // Ne pas trier si ce n'est pas un adulte
+        });
+
+        // Explorer les voisins
+        for (const neighbor of neighbors) {
+            if (!visited[neighbor] && this.capacity[source][neighbor] > 0) {  // Il y a encore de la capacité
+                parent[neighbor] = source; // Sauvegarder d'où nous venons
+                if (this.dfs(neighbor, sink, parent, visited, giftsGiven)) {
+                    // Si c'est un adulte, mettre à jour le nombre de cadeaux donnés
+                    if (neighbor < this.size - 1) {
+                        const adultIndex = neighbor - 1;  // L'adulte est identifié par son index
+                        giftsGiven[adultIndex]++;  // Mettre à jour le nombre de cadeaux donnés par cet adulte
                     }
+                    return true;
                 }
             }
         }
+
         return false;
     }
 
-    // Algorithme de flux maximal (Edmonds-Karp)
-    edmondsKarp(source: number, sink: number) {
-        const parent = Array(this.size).fill(-1);
+    // Algorithme de flux maximal (Edmonds-Karp modifié avec DFS)
+    edmondsKarp(source: number, sink: number, giftsGiven: number[]) {
+        let parent = Array(this.size).fill(-1);
         let maxFlow = 0;
 
         // Tant qu'il existe un chemin augmentant
-        while (this.bfs(source, sink, parent)) {
+        while (true) {
+            // Tableau pour marquer les nœuds visités
+            let visited = Array(this.size).fill(false);
+
+            // Si DFS trouve un chemin
+            if (!this.dfs(source, sink, parent, visited, giftsGiven)) {
+                break; // Aucun chemin augmentant trouvé
+            }
+
+            // Trouver la capacité du chemin trouvé
             let pathFlow = Infinity;
             let s = sink;
             while (s !== source) {
@@ -82,14 +108,14 @@ class Graph {
 }
 
 function assignChildren(adults: Membre[], children: Membre[], familyRelations: boolean[][]) {
-    const capaciteMinimale = Math.floor(children.length / adults.length) + 1;
+    const capaciteMinimale = Math.floor(children.length / adults.length) + (children.length % adults.length ? 1 : 0);
 
     // Trouver une solution avec la capacité minimale
     for (let i = capaciteMinimale; i <= children.length; i++) {
         const result = assignGifts(adults, children, familyRelations, i);
-        if (result) {
+        if (result)
             return result;
-        }
+
     }
 
     return undefined;
@@ -99,6 +125,7 @@ function assignChildren(adults: Membre[], children: Membre[], familyRelations: b
 function assignGifts(adults: Membre[], children: Membre[], familyRelations: boolean[][], capacity: number) {
     const numAdults = adults.length;
     const numChildren = children.length;
+    const giftsGiven = Array(numAdults).fill(0);
 
     // Créer un graphe avec source (source = 0), adultes, enfants, et puits (sink = 1 + adultes + enfants)
     const graphSize = 2 + numAdults + numChildren;
@@ -129,7 +156,7 @@ function assignGifts(adults: Membre[], children: Membre[], familyRelations: bool
     const initialCapacity = graph.capacity.map(x => [...x]);
 
     // Calculer le flux maximal
-    const maxFlow = graph.edmondsKarp(source, sink);
+    const maxFlow = graph.edmondsKarp(source, sink, giftsGiven);
 
     // Vérifier si chaque enfant a bien reçu un cadeau
     if (maxFlow === numChildren) {
