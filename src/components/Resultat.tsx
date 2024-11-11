@@ -1,7 +1,7 @@
 import React from 'react';
 import { Membre } from '../model/membre';
 
-export const Resultat = (props: { titre: string, resultat: { donneur: Membre, receveur: Membre }[], erreur: boolean }) =>
+export const Resultat = (props: { titre: string, resultat: { donneur: Membre, receveur: Membre }[] }) =>
     props.resultat && <table style={{ width: '100%' }}>
         <caption>{props.titre}</caption>
         {

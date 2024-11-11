@@ -61,27 +61,23 @@ function Cadeaux() {
   ]);
   const [repartitionAdultes, setRepartitionAdultes] = useState<{ donneur: Membre, receveur: Membre }[]>();
   const [repartitionEnfants, setRepartitionEnfants] = useState<{ donneur: Membre, receveur: Membre }[]>();
-  const [erreurAdultes, setErreurAdultes] = useState(false);
-  const [erreurEnfants, setErreurEnfants] = useState(false);
 
   function calculer() {
     const solutionAdultes = calculerRepartitionAdultes(membres);
-    afficherSolution(solutionAdultes, setRepartitionAdultes, setErreurAdultes);
+    afficherSolution(solutionAdultes, setRepartitionAdultes);
 
     const solutionEnfants = calculerRepartitionEnfants(membres);
-    afficherSolution(solutionEnfants, setRepartitionEnfants, setErreurEnfants);
+    afficherSolution(solutionEnfants, setRepartitionEnfants);
   }
 
   function afficherSolution(
     solution: { donneur: Membre; receveur: Membre; }[],
-    stateSetter: (value: React.SetStateAction<{ donneur: Membre; receveur: Membre; }[]>) => void,
-    errorSetter: (value: React.SetStateAction<boolean>) => void) {
+    stateSetter: (value: React.SetStateAction<{ donneur: Membre; receveur: Membre; }[]>) => void
+  ) {
     if (solution) {
       stateSetter(solution);
-      errorSetter(false);
     } else {
       stateSetter([]);
-      errorSetter(true);
     }
   }
 
@@ -152,8 +148,8 @@ function Cadeaux() {
         </tr>
       </tfoot>
     </table>,
-    <Resultat titre="Répartition adultes" resultat={repartitionAdultes} erreur={erreurAdultes} />,
-    <Resultat titre="Répartition enfants" resultat={repartitionEnfants} erreur={erreurEnfants} />,
+    <Resultat titre="Répartition adultes" resultat={repartitionAdultes} />,
+    <Resultat titre="Répartition enfants" resultat={repartitionEnfants} />,
   ]
 }
 
