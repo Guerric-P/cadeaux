@@ -64,21 +64,10 @@ function Cadeaux() {
 
   function calculer() {
     const solutionAdultes = calculerRepartitionAdultes(membres);
-    afficherSolution(solutionAdultes, setRepartitionAdultes);
+    setRepartitionAdultes(solutionAdultes || []);
 
     const solutionEnfants = calculerRepartitionEnfants(membres);
-    afficherSolution(solutionEnfants, setRepartitionEnfants);
-  }
-
-  function afficherSolution(
-    solution: { donneur: Membre; receveur: Membre; }[],
-    stateSetter: (value: React.SetStateAction<{ donneur: Membre; receveur: Membre; }[]>) => void
-  ) {
-    if (solution) {
-      stateSetter(solution);
-    } else {
-      stateSetter([]);
-    }
+    setRepartitionEnfants(solutionEnfants || []);
   }
 
   return [
