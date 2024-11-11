@@ -2,8 +2,9 @@ import { useState } from 'react';
 import './App.css';
 import React from 'react';
 import { Membre } from './model/membre';
-import { GraphNode } from './model/graph-node';
-import { shuffleArray } from './util/array';
+import { calculerRepartitionEnfants } from './service/enfants';
+import { Resultat } from './components/Resultat';
+import { calculerRepartitionAdultes } from './service/adultes';
 
 function Cadeaux() {
   const [membres, setMembres] = useState<Membre[]>([
@@ -58,116 +59,30 @@ function Cadeaux() {
       enfant: true,
     },
   ]);
-  const [resultat, setResultat] = useState<{ donneur: Membre, receveur: Membre }[]>([]);
-  const [erreur, setErreur] = useState(false);
+  const [repartitionAdultes, setRepartitionAdultes] = useState<{ donneur: Membre, receveur: Membre }[]>([]);
+  const [repartitionEnfants, setRepartitionEnfants] = useState<{ donneur: Membre, receveur: Membre }[]>([]);
+  const [erreurAdultes, setErreurAdultes] = useState(false);
+  const [erreurEnfants, setErreurEnfants] = useState(false);
 
-  function compute() {
-    const graphNodes: GraphNode[] = membres.filter(x => !x.enfant).map(m => ({ membre: m, relations: [] }));
-    graphNodes.forEach(n => n.relations = graphNodes.filter(x => x.membre !== n.membre && x.membre.famille !== n.membre.famille));
-    const [initialNode] = graphNodes;
+  function calculer() {
+    const solutionAdultes = calculerRepartitionAdultes(membres);
+    afficherSolution(solutionAdultes, setRepartitionAdultes, setErreurAdultes);
 
-    const path = findHamiltonianCycle([initialNode], graphNodes.length);
+    const solutionEnfants = calculerRepartitionEnfants(membres);
+    afficherSolution(solutionEnfants, setRepartitionEnfants, setErreurEnfants);
+  }
 
-    if (path.length !== 0) {
-      const solution = path.map((x, i, { [i - 1]: last }) => last && { donneur: last.membre, receveur: x.membre }).filter(x => x);
-      setResultat(solution);
-      setErreur(false);
+  function afficherSolution(
+    solution: { donneur: Membre; receveur: Membre; }[],
+    stateSetter: (value: React.SetStateAction<{ donneur: Membre; receveur: Membre; }[]>) => void,
+    errorSetter: (value: React.SetStateAction<boolean>) => void) {
+    if (solution) {
+      stateSetter(solution);
+      errorSetter(false);
     } else {
-      setResultat([]);
-      setErreur(true);
+      stateSetter([]);
+      errorSetter(true);
     }
-
-    assignChildren(membres);
-  }
-
-  /**
-   * Si possible, trouve un cycle hamiltonien dans le graphe, c'est à dire un cycle qui passe une seule fois par chacun des noeuds
-   * Si pas possible, retourne un chemin vide (de taille 0)
-   * 
-   * @param path 
-   * @param finalLength 
-   * @returns 
-   */
-  function findHamiltonianCycle(path: GraphNode[], finalLength: number): GraphNode[] {
-    const { [0]: firstNode, [path.length - 1]: lastNode } = path;
-
-    if (path.length === finalLength) {
-      // Soit on ferme le cycle si c'est possible, sinon backtrack
-      return lastNode.relations.includes(firstNode) ? [...path, firstNode] : path.filter(x => x !== lastNode);
-    }
-
-    const nodesEligibles = lastNode.relations.filter(x => !path.includes(x));
-
-    const indexes = Object.keys(nodesEligibles);
-
-    // Randomisation pour que chaque tirage ait une chance d'être différent
-    shuffleArray(indexes);
-
-    for (const i of indexes) {
-      const result = findHamiltonianCycle([...path, nodesEligibles[i]], finalLength);
-      if (result.length === finalLength + 1)
-        // Une solution existe sur le chemin courant, on la retourne
-        return result;
-    }
-
-    // Aucune solution sur le chemin courant, on backtrack
-    return path.filter(x => x !== lastNode);
-  }
-
-  function assignChildren(membres: Membre[]) {
-    const adultes = membres.filter(x => !x.enfant).map(membre => ({ membre, peutOffrir: membres.filter(x => x.enfant && x.famille !== membre.famille) }));
-    adultes.forEach(x => shuffleArray(x.peutOffrir));
-    const enfants = membres.filter(x => x.enfant);
-    [adultes, enfants].forEach(shuffleArray);
-    const repartition: { donneur: Membre, receveur: Membre }[] = [];
-
-    const solution = findChildrenRepartition(adultes, enfants, enfants.length, repartition);
-    console.log(solution);
-  }
-
-  function findChildrenRepartition(adultes: { membre: Membre; peutOffrir: Membre[]; }[], enfants: Membre[], initialEnfantsLength: number, repartition: { donneur: Membre, receveur: Membre }[]) {
-
-    if (enfants.length === 0) {
-      return repartition;
-    }
-
-    const adultesEligibles = getAdultesEligibles(adultes, repartition);
-
-    if (adultesEligibles.length) {
-      for (const enfant of enfants) {
-        for (const adulte of adultesEligibles) {
-          if (adulte.peutOffrir.includes(enfant)) {
-            repartition.push({ donneur: adulte.membre, receveur: enfant });
-            const result = findChildrenRepartition(adultes, enfants.filter(x => x !== enfant), initialEnfantsLength, repartition);
-            if (result.length === initialEnfantsLength) {
-              return result;
-            }
-          }
-        }
-      }
-    }
-
-    const { [repartition.length - 1]: lastRepartition } = repartition;
-    return repartition.filter(x => x !== lastRepartition);
-  }
-
-  function getAdultesEligibles(adultes: { membre: Membre; peutOffrir: Membre[]; }[], repartition: { donneur: Membre; receveur: Membre }[]) {
-    if (repartition.length < adultes.length) {
-      return adultes.filter(x => !repartition.some(y => y.donneur === x.membre));
-    }
-    const grouped = Map.groupBy(repartition, x => x.donneur);
-    const byCount = Map.groupBy(grouped, ([_, assignation]) => assignation.length);
-
-    const min = Math.min(...byCount.keys().toArray());
-
-    const adultesAyantDonneMoins =
-      byCount.entries()
-        .filter(([count]) => count === min)
-        .map(([_, [x]]) => x)
-        .flatMap(([x]) => adultes.filter(y => y.membre === x))
-        .toArray();
-
-    return adultesAyantDonneMoins.length ? adultesAyantDonneMoins : adultes;
   }
 
   return [
@@ -233,30 +148,12 @@ function Cadeaux() {
               Ajouter un membre
             </button>
           </th>
-          <button onClick={compute}>Bouléguer</button>
+          <button onClick={calculer}>Bouléguer</button>
         </tr>
       </tfoot>
     </table>,
-    resultat.length ? <table style={{ width: '100%' }}>
-      <caption>Résultat</caption>
-
-      <thead>
-        <tr>
-          <th scope="col">Donneur</th>
-          <th scope="col">Receveur</th>
-        </tr>
-      </thead>
-
-      {
-        resultat.map((r, i) => (
-          <tr key={i}>
-            <td>{r.donneur.nom}</td>
-            <td>{r.receveur.nom}</td>
-          </tr>
-        ))
-      }
-    </table> : <></>,
-    erreur ? <div>Aucune répartition n'existe pour les contraintes données.</div> : <></>
+    repartitionAdultes.length ? <Resultat titre="Répartition adultes" resultat={repartitionAdultes} erreur={erreurAdultes} /> : <></>,
+    repartitionEnfants.length ? <Resultat titre="Répartition enfants" resultat={repartitionEnfants} erreur={erreurEnfants} /> : <></>,
   ]
 }
 
