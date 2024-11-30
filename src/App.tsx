@@ -89,9 +89,9 @@ function Cadeaux() {
         <tbody>
           {membres.map((m, i) => (
             <tr key={i} className="border-t">
-              <td className="px-4 py-2">
+              <td className="sm:px-4 sm:py-2 p-1">
                 <input
-                  className="border rounded p-1 w-full"
+                  className="border rounded p-1 w-full sm:p-2 sm:w-auto"
                   value={m.nom}
                   onChange={(event) => {
                     const newMembres = [...membres];
@@ -100,9 +100,9 @@ function Cadeaux() {
                   }}
                 />
               </td>
-              <td className="px-4 py-2">
+              <td className="sm:px-4 sm:py-2 p-1">
                 <input
-                  className="border rounded p-1 w-full"
+                  className="border rounded p-1 w-full sm:p-2 sm:w-auto"
                   value={m.famille}
                   onChange={(event) => {
                     const newMembres = [...membres];
@@ -111,7 +111,7 @@ function Cadeaux() {
                   }}
                 />
               </td>
-              <td className="px-4 py-2">
+              <td className="sm:px-4 sm:py-2 p-1">
                 <input
                   type="checkbox"
                   checked={m.enfant}
@@ -122,7 +122,7 @@ function Cadeaux() {
                   }}
                 />
               </td>
-              <td className="px-4 py-2">
+              <td className="sm:px-4 sm:py-2 p-1">
                 <button
                   className="text-white px-3 py-1 rounded bg-slate-800 dark:bg-transparent"
                   onClick={() => {
@@ -145,7 +145,7 @@ function Cadeaux() {
                     setMembres([...membres, { nom: '', famille: '', enfant: false }])
                   }
                 > <AddIcon />
-                  Ajouter un membre
+                  Ajouter
                 </button>
                 <button
                   className="bg-indigo-500 text-white px-4 py-2 rounded inline-flex gap-x-1.5"
