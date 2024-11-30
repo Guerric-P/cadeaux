@@ -1,8 +1,5 @@
-# React + Vite
+# Cadeaux
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application web permettant de calculer une répartition aléatoire de cadeaux de Noël entre plusieurs familles, selon la règle : chaque personne (adulte ou enfant) reçoit un cadeau d'un adulte d'une autre famille.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+L'application est déployée sur l'URL: https://guerric-p.github.io/cadeaux/
