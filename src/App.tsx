@@ -124,7 +124,7 @@ function Cadeaux() {
               </td>
               <td className="px-4 py-2">
                 <button
-                  className="text-white px-3 py-1 rounded"
+                  className="text-white px-3 py-1 rounded bg-slate-800 dark:bg-transparent"
                   onClick={() => {
                     setMembres(membres.filter((_, idx) => idx !== i));
                   }}
