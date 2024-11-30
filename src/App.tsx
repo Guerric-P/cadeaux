@@ -161,8 +161,10 @@ function Cadeaux() {
         </tfoot>
       </table>
     </div>,
-    <Resultat titre="Répartition adultes" resultat={repartitionAdultes} />,
-    <Resultat titre="Répartition enfants" resultat={repartitionEnfants} />,
+    <div className="w-fit m-auto text-left">
+      <Resultat titre="Répartition adultes" resultat={repartitionAdultes} />
+      <Resultat titre="Répartition enfants" resultat={repartitionEnfants} />
+    </div>
   ];
 }
 

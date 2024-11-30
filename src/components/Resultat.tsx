@@ -2,7 +2,7 @@ import React from 'react';
 import { Membre } from '../model/membre';
 
 export const Resultat = (props: { titre: string, resultat: { donneur: Membre, receveur: Membre }[] }) =>
-    props.resultat && <div className="w-fit m-auto text-left">
+    props.resultat && <div className="w-fit text-left">
         <div className="text-lg font-bold py-2">{props.titre}</div>
         {
             props.resultat.length ?
