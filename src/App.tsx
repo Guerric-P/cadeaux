@@ -5,6 +5,9 @@ import { Membre } from './model/membre';
 import { calculerRepartitionEnfants } from './service/enfants';
 import { Resultat } from './components/Resultat';
 import { calculerRepartitionAdultes } from './service/adultes';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CasinoIcon from '@mui/icons-material/Casino';
+import AddIcon from '@mui/icons-material/Add';
 
 function Cadeaux() {
   const [membres, setMembres] = useState<Membre[]>([
@@ -59,6 +62,7 @@ function Cadeaux() {
       enfant: true,
     },
   ]);
+
   const [repartitionAdultes, setRepartitionAdultes] = useState<{ donneur: Membre, receveur: Membre }[]>();
   const [repartitionEnfants, setRepartitionEnfants] = useState<{ donneur: Membre, receveur: Membre }[]>();
 
@@ -71,75 +75,95 @@ function Cadeaux() {
   }
 
   return [
-    <table key={0}>
-      <caption>Cadeaux</caption>
-      <thead>
-        <tr>
-          <th scope="col">Nom</th>
-          <th scope="col">Famille</th>
-          <th scope="col">Enfant</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {membres.map((m, i) => (
-          <tr key={i}>
-            <td>
-              <input
-                value={m.nom}
-                onChange={(event) => {
-                  const newMembres = [...membres];
-                  newMembres[i].nom = event.target.value;
-                  setMembres(newMembres);
-                }}
-              />
-            </td>
-            <td>
-              <input
-                value={m.famille}
-                onChange={(event) => {
-                  const newMembres = [...membres];
-                  newMembres[i].famille = event.target.value;
-                  setMembres(newMembres);
-                }}
-              />
-            </td>
-            <td>
-              <input type='checkbox'
-                checked={m.enfant}
-                onChange={(event) => {
-                  const newMembres = [...membres];
-                  newMembres[i].enfant = event.target.checked;
-                  setMembres(newMembres);
-                }}
-              />
-            </td>
-            <td>
-              <button onClick={() => {
-                setMembres(membres.filter((_, idx) => idx !== i))
-              }}>Supprimer</button>
-            </td>
+    <div className="overflow-x-auto">
+      <table className="min-w-full table-auto">
+        <caption className="text-lg font-bold py-2">Cadeaux</caption>
+        <thead>
+          <tr>
+            <th className="px-4 py-2 text-left">Nom</th>
+            <th className="px-4 py-2 text-left">Famille</th>
+            <th className="px-4 py-2 text-left">Enfant</th>
+            <th className="px-4 py-2 text-left">Actions</th>
           </tr>
-        ))}
-      </tbody>
-      <tfoot>
-        <tr>
-          <th scope="row" colSpan={2}>
-            <button
-              onClick={() =>
-                setMembres([...membres, { nom: '', famille: '', enfant: false }])
-              }
-            >
-              Ajouter un membre
-            </button>
-          </th>
-          <button onClick={calculer}>Bouléguer</button>
-        </tr>
-      </tfoot>
-    </table>,
+        </thead>
+        <tbody>
+          {membres.map((m, i) => (
+            <tr key={i} className="border-t">
+              <td className="px-4 py-2">
+                <input
+                  className="border rounded p-1 w-full"
+                  value={m.nom}
+                  onChange={(event) => {
+                    const newMembres = [...membres];
+                    newMembres[i].nom = event.target.value;
+                    setMembres(newMembres);
+                  }}
+                />
+              </td>
+              <td className="px-4 py-2">
+                <input
+                  className="border rounded p-1 w-full"
+                  value={m.famille}
+                  onChange={(event) => {
+                    const newMembres = [...membres];
+                    newMembres[i].famille = event.target.value;
+                    setMembres(newMembres);
+                  }}
+                />
+              </td>
+              <td className="px-4 py-2">
+                <input
+                  type="checkbox"
+                  checked={m.enfant}
+                  onChange={(event) => {
+                    const newMembres = [...membres];
+                    newMembres[i].enfant = event.target.checked;
+                    setMembres(newMembres);
+                  }}
+                />
+              </td>
+              <td className="px-4 py-2">
+                <button
+                  className="text-white px-3 py-1 rounded"
+                  onClick={() => {
+                    setMembres(membres.filter((_, idx) => idx !== i));
+                  }}
+                >
+                  <DeleteIcon />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th className="px-4 py-2" colSpan={4}>
+              <div className="flex justify-evenly">
+                <button
+                  className="bg-indigo-500 text-white px-4 py-2 rounded inline-flex gap-x-1.5"
+                  onClick={() =>
+                    setMembres([...membres, { nom: '', famille: '', enfant: false }])
+                  }
+                > <AddIcon />
+                  Ajouter un membre
+                </button>
+                <button
+                  className="bg-indigo-500 text-white px-4 py-2 rounded inline-flex gap-x-1.5"
+                  onClick={calculer}
+                >
+                  <CasinoIcon />
+                  Bouléguer
+                </button>
+              </div>
+
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>,
     <Resultat titre="Répartition adultes" resultat={repartitionAdultes} />,
     <Resultat titre="Répartition enfants" resultat={repartitionEnfants} />,
-  ]
+  ];
 }
 
 export default Cadeaux;
