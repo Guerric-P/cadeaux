@@ -73,7 +73,7 @@ function Cadeaux() {
         x: event.clientX / window.innerWidth * 100,
         y: event.clientY / window.innerHeight * 100,
       },
-      scalar:2,
+      scalar: 2,
       shapes: ["emoji"],
       shapeOptions: {
         emoji: {
@@ -89,7 +89,7 @@ function Cadeaux() {
     setRepartitionEnfants(solutionEnfants || []);
   }
 
-  return [
+  return <>
     <div className="overflow-x-auto">
       <table className="min-w-full table-auto">
         <caption className="text-lg font-bold py-2">Cadeaux</caption>
@@ -170,17 +170,16 @@ function Cadeaux() {
                   Bouléguer
                 </button>
               </div>
-
             </th>
           </tr>
         </tfoot>
       </table>
-    </div>,
+    </div>
     <div className="w-fit m-auto text-left">
       <Resultat titre="Répartition adultes" resultat={repartitionAdultes} />
       <Resultat titre="Répartition enfants" resultat={repartitionEnfants} />
     </div>
-  ];
+  </>;
 }
 
 export default Cadeaux;
