@@ -8,6 +8,7 @@ import { calculerRepartitionAdultes } from './service/adultes';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CasinoIcon from '@mui/icons-material/Casino';
 import AddIcon from '@mui/icons-material/Add';
+import { confetti } from '@tsparticles/confetti';
 
 function Cadeaux() {
   const [membres, setMembres] = useState<Membre[]>([
@@ -66,7 +67,21 @@ function Cadeaux() {
   const [repartitionAdultes, setRepartitionAdultes] = useState<{ donneur: Membre, receveur: Membre }[]>();
   const [repartitionEnfants, setRepartitionEnfants] = useState<{ donneur: Membre, receveur: Membre }[]>();
 
-  function calculer() {
+  function calculer(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    confetti({
+      position: {
+        x: event.clientX / window.innerWidth * 100,
+        y: event.clientY / window.innerHeight * 100,
+      },
+      scalar:2,
+      shapes: ["emoji"],
+      shapeOptions: {
+        emoji: {
+          value: '🎁',
+        },
+      },
+    });
+
     const solutionAdultes = calculerRepartitionAdultes(membres);
     setRepartitionAdultes(solutionAdultes || []);
 
