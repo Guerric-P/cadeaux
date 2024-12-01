@@ -14,8 +14,6 @@ export function calculerRepartitionAdultes(membres: Membre[]) {
     graphNodes.forEach(n => n.relations = graphNodes.filter(x => x.membre !== n.membre && x.membre.famille !== n.membre.famille));
     const [initialNode] = graphNodes;
 
-
-
     const path = findHamiltonianCycle([initialNode], graphNodes.length);
 
     if (path.length !== 0) {
