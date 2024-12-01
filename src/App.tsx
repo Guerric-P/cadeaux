@@ -3,12 +3,14 @@ import './App.css';
 import React from 'react';
 import { Membre } from './model/membre';
 import { calculerRepartitionEnfants } from './service/enfants';
-import { Resultat } from './components/Resultat';
+import Resultat from './components/Resultat';
+import LanguageSelection from './components/LanguageSelection';
 import { calculerRepartitionAdultes } from './service/adultes';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CasinoIcon from '@mui/icons-material/Casino';
 import AddIcon from '@mui/icons-material/Add';
 import { confetti } from '@tsparticles/confetti';
+import { useTranslation } from 'react-i18next';
 
 function Cadeaux() {
   const [membres, setMembres] = useState<Membre[]>([
@@ -67,6 +69,8 @@ function Cadeaux() {
   const [repartitionAdultes, setRepartitionAdultes] = useState<{ donneur: Membre, receveur: Membre }[]>();
   const [repartitionEnfants, setRepartitionEnfants] = useState<{ donneur: Membre, receveur: Membre }[]>();
 
+  const { t } = useTranslation();
+
   function calculer(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     confetti({
       position: {
@@ -90,15 +94,16 @@ function Cadeaux() {
   }
 
   return <>
+    <LanguageSelection />
     <div className="overflow-x-auto">
       <table className="min-w-full table-auto">
-        <caption className="text-lg font-bold py-2">Cadeaux</caption>
+        <caption className="text-lg font-bold py-2">{t('title')}</caption>
         <thead>
           <tr>
-            <th className="px-4 py-2 text-left">Nom</th>
-            <th className="px-4 py-2 text-left">Famille</th>
-            <th className="px-4 py-2 text-left">Enfant</th>
-            <th className="px-4 py-2 text-left">Actions</th>
+            <th className="px-4 py-2 text-left">{t('headers.firstName')}</th>
+            <th className="px-4 py-2 text-left">{t('headers.lastName')}</th>
+            <th className="px-4 py-2 text-left">{t('headers.child')}</th>
+            <th className="px-4 py-2 text-left">{t('headers.actions')}</th>
           </tr>
         </thead>
         <tbody>
@@ -160,14 +165,14 @@ function Cadeaux() {
                     setMembres([...membres, { nom: '', famille: '', enfant: false }])
                   }
                 > <AddIcon />
-                  Ajouter
+                  {t('buttons.add')}
                 </button>
                 <button
                   className="bg-indigo-500 text-white px-4 py-2 rounded inline-flex gap-x-1.5"
                   onClick={calculer}
                 >
                   <CasinoIcon />
-                  Bouléguer
+                  {t('buttons.randomize')}
                 </button>
               </div>
             </th>
@@ -176,8 +181,8 @@ function Cadeaux() {
       </table>
     </div>
     <div className="w-fit m-auto text-left">
-      <Resultat titre="Répartition adultes" resultat={repartitionAdultes} />
-      <Resultat titre="Répartition enfants" resultat={repartitionEnfants} />
+      <Resultat titre={t('distribution.adultsTitle')} resultat={repartitionAdultes} />
+      <Resultat titre={t('distribution.childrenTitle')} resultat={repartitionEnfants} />
     </div>
   </>;
 }

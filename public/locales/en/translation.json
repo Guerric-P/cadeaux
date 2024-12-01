@@ -1,0 +1,19 @@
+{
+    "title": "Secret Santa",
+    "headers": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "child": "Child",
+        "actions": "Actions"
+    },
+    "buttons": {
+        "add": "Add",
+        "randomize": "Randomize"
+    },
+    "distribution": {
+        "adultsTitle": "Adults distribution",
+        "childrenTitle": "Children distribution",
+        "giftSentence": "gives a gift 🎁 to",
+        "noDistributionExists": "No distribution exists for the given constraints."
+    }
+}

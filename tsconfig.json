@@ -4,6 +4,8 @@
         "lib": ["ESNext", "DOM"],
         "target": "ES6",
         "esModuleInterop": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "module": "ES2020",
+        "types": ["vite/client"]
     }
 }

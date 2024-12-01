@@ -1,0 +1,19 @@
+{
+    "title": "Cadeaux",
+    "headers": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "child": "Enfant",
+        "actions": "Actions"
+    },
+    "buttons": {
+        "add": "Ajouter",
+        "randomize": "Bouléguer"
+    },
+    "distribution": {
+        "adultsTitle": "Répartition adultes",
+        "childrenTitle": "Répartition enfants",
+        "giftSentence": "donne un cadeau 🎁 à",
+        "noDistributionExists": "Aucune répartition n'existe pour les contraintes données."
+    }
+}
