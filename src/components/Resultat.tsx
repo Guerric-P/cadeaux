@@ -12,7 +12,7 @@ export default (props: { titre: string, resultat: { donneur: Membre, receveur: M
                 ? props.resultat.map((r, i) =>
                     <div key={i}>
                         <span className="font-bold">{r.donneur.nom}</span>
-                        &nbsp;{t('distribution.giftSentence')}&nbsp;
+                        {t('distribution.giftSentence')}
                         <span className="font-bold">{r.receveur.nom}</span>
                     </div>
                 )
