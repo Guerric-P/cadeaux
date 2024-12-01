@@ -6,7 +6,7 @@ export default (props: { titre: string, resultat: { donneur: Membre, receveur: M
     const { t } = useTranslation();
 
     return props.resultat && <div className="w-fit text-left">
-        <div className="text-lg font-bold py-2">{props.titre}</div>
+        <div className="text-lg text-center font-bold py-2">{props.titre}</div>
         {
             props.resultat.length
                 ? props.resultat.map((r, i) =>

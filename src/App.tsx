@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import React from 'react';
 import { Membre } from './model/membre';
@@ -74,8 +74,10 @@ function Cadeaux() {
   const { t } = useTranslation();
 
   const resultsRef = React.createRef<HTMLDivElement>();
+  const copyButtonRef = React.createRef<HTMLButtonElement>();
 
   function calculer(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+
     confetti({
       position: {
         x: event.clientX / window.innerWidth * 100,
@@ -97,10 +99,12 @@ function Cadeaux() {
 
     const solutionEnfants = calculerRepartitionEnfants(membres);
     setRepartitionEnfants(solutionEnfants || []);
+
+    copyButtonRef.current.scrollIntoView();
   }
 
   return <>
-    <LanguageSelection />
+    <LanguageSelection className="absolute right-1 top-1" />
     <div className="overflow-x-auto">
       <table className="min-w-full table-auto">
         <caption className="text-lg font-bold py-2">{t('title')}</caption>
@@ -189,8 +193,9 @@ function Cadeaux() {
     <div className="w-fit m-auto text-left" ref={resultsRef}>
       <Resultat titre={t('distribution.adultsTitle')} resultat={repartitionAdultes} />
       <Resultat titre={t('distribution.childrenTitle')} resultat={repartitionEnfants} />
+      <CopyToClipboard text={resultsRef} copied={copied} onClick={() => setCopied(true)} className="mt-4" ref={copyButtonRef}></CopyToClipboard>
     </div>
-    <CopyToClipboard html={resultsRef} copied={copied} onClick={() => setCopied(true)}></CopyToClipboard>
+    
   </>;
 }
 
