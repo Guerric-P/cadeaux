@@ -13,7 +13,7 @@
     "distribution": {
         "adultsTitle": "Adults distribution",
         "childrenTitle": "Children distribution",
-        "giftSentence": "gives a gift 🎁 to",
+        "giftSentence": " gives a gift 🎁 to ",
         "noDistributionExists": "No distribution exists for the given constraints."
     },
     "clipboard": {
