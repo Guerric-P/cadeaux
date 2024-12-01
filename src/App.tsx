@@ -76,6 +76,12 @@ function Cadeaux() {
   const resultsRef = React.createRef<HTMLDivElement>();
   const copyButtonRef = React.createRef<HTMLButtonElement>();
 
+  useEffect(() => {
+    if (copyButtonRef.current) {
+      copyButtonRef.current.scrollIntoView();
+    }
+  }, [repartitionAdultes, repartitionEnfants])
+
   function calculer(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
 
     confetti({
@@ -99,8 +105,6 @@ function Cadeaux() {
 
     const solutionEnfants = calculerRepartitionEnfants(membres);
     setRepartitionEnfants(solutionEnfants || []);
-
-    copyButtonRef.current.scrollIntoView();
   }
 
   return <>
@@ -193,9 +197,14 @@ function Cadeaux() {
     <div className="w-fit m-auto text-left" ref={resultsRef}>
       <Resultat titre={t('distribution.adultsTitle')} resultat={repartitionAdultes} />
       <Resultat titre={t('distribution.childrenTitle')} resultat={repartitionEnfants} />
-      <CopyToClipboard text={resultsRef} copied={copied} onClick={() => setCopied(true)} className="mt-4" ref={copyButtonRef}></CopyToClipboard>
+      {
+        repartitionAdultes || repartitionEnfants
+          ? <CopyToClipboard text={resultsRef} copied={copied} onClick={() => setCopied(true)} className="mt-4" ref={copyButtonRef}></CopyToClipboard>
+          : <></>
+      }
+
     </div>
-    
+
   </>;
 }
 
