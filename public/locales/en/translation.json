@@ -15,5 +15,9 @@
         "childrenTitle": "Children distribution",
         "giftSentence": "gives a gift 🎁 to",
         "noDistributionExists": "No distribution exists for the given constraints."
+    },
+    "clipboard": {
+        "copy": "Copy",
+        "copied": "Copied"
     }
 }

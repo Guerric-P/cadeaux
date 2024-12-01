@@ -11,6 +11,7 @@ import CasinoIcon from '@mui/icons-material/Casino';
 import AddIcon from '@mui/icons-material/Add';
 import { confetti } from '@tsparticles/confetti';
 import { useTranslation } from 'react-i18next';
+import CopyToClipboard from './components/CopyToClipboard';
 
 function Cadeaux() {
   const [membres, setMembres] = useState<Membre[]>([
@@ -68,8 +69,11 @@ function Cadeaux() {
 
   const [repartitionAdultes, setRepartitionAdultes] = useState<{ donneur: Membre, receveur: Membre }[]>();
   const [repartitionEnfants, setRepartitionEnfants] = useState<{ donneur: Membre, receveur: Membre }[]>();
+  const [copied, setCopied] = useState<boolean>(false);
 
   const { t } = useTranslation();
+
+  const resultsRef = React.createRef<HTMLDivElement>();
 
   function calculer(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     confetti({
@@ -85,6 +89,8 @@ function Cadeaux() {
         },
       },
     });
+
+    setCopied(false);
 
     const solutionAdultes = calculerRepartitionAdultes(membres);
     setRepartitionAdultes(solutionAdultes || []);
@@ -180,10 +186,11 @@ function Cadeaux() {
         </tfoot>
       </table>
     </div>
-    <div className="w-fit m-auto text-left">
+    <div className="w-fit m-auto text-left" ref={resultsRef}>
       <Resultat titre={t('distribution.adultsTitle')} resultat={repartitionAdultes} />
       <Resultat titre={t('distribution.childrenTitle')} resultat={repartitionEnfants} />
     </div>
+    <CopyToClipboard html={resultsRef} copied={copied} onClick={() => setCopied(true)}></CopyToClipboard>
   </>;
 }
 

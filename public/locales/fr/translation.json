@@ -15,5 +15,9 @@
         "childrenTitle": "Répartition enfants",
         "giftSentence": "donne un cadeau 🎁 à",
         "noDistributionExists": "Aucune répartition n'existe pour les contraintes données."
+    },
+    "clipboard": {
+        "copy": "Copier",
+        "copied": "Copié"
     }
 }
