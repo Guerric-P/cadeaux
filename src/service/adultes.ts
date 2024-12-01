@@ -3,17 +3,24 @@ import { Membre } from "../model/membre";
 import { shuffleArray } from "../util/array";
 
 export function calculerRepartitionAdultes(membres: Membre[]) {
+
+    const adultes = membres.filter(x => !x.enfant)
+    const grouped = Object.groupBy(adultes, m => m.famille);
+
+    if (Object.values(grouped).some(x => x.length > adultes.length / 2))
+        return;
+
     const graphNodes: GraphNode[] = membres.filter(x => !x.enfant).map(m => ({ membre: m, relations: [] }));
     graphNodes.forEach(n => n.relations = graphNodes.filter(x => x.membre !== n.membre && x.membre.famille !== n.membre.famille));
     const [initialNode] = graphNodes;
 
+
+
     const path = findHamiltonianCycle([initialNode], graphNodes.length);
 
     if (path.length !== 0) {
-      return path.map((x, i, { [i - 1]: last }) => last && { donneur: last.membre, receveur: x.membre }).filter(x => x);
+        return path.map((x, i, { [i - 1]: last }) => last && { donneur: last.membre, receveur: x.membre }).filter(x => x);
     }
-
-    return undefined;
 }
 
 /**
