@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import React from 'react';
-import { Membre } from './model/membre';
-import { calculerRepartitionEnfants } from './service/enfants';
-import Resultat from './components/Resultat';
-import LanguageSelection from './components/LanguageSelection';
-import { calculerRepartitionAdultes } from './service/adultes';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CasinoIcon from '@mui/icons-material/Casino';
 import AddIcon from '@mui/icons-material/Add';
+import CasinoIcon from '@mui/icons-material/Casino';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { confetti } from '@tsparticles/confetti';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import './App.css';
 import CopyToClipboard from './components/CopyToClipboard';
+import LanguageSelection from './components/LanguageSelection';
+import Resultat from './components/Resultat';
+import { Membre } from './model/membre';
+import { calculerRepartitionAdultes } from './service/adultes';
+import { calculerRepartitionEnfants } from './service/enfants';
 
 function Cadeaux() {
   const [membres, setMembres] = useState<Membre[]>([

@@ -1,5 +1,5 @@
-import React, { forwardRef } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import React, { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export default forwardRef(

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Membre } from '../model/membre';
 import { useTranslation } from 'react-i18next';
+import { Membre } from '../model/membre';
 
 export default (props: { titre: string, resultat: { donneur: Membre, receveur: Membre }[] }) => {
     const { t } = useTranslation();
