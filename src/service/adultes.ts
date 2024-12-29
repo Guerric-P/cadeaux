@@ -1,6 +1,6 @@
-import { GraphNode } from "../model/graph-node";
-import { Membre } from "../model/membre";
-import { shuffleArray } from "../util/array";
+import { GraphNode } from "@cadeaux/model/graph-node";
+import { Membre } from "@cadeaux/model/membre";
+import { shuffleArray } from "@cadeaux/util/array";
 
 export function calculerRepartitionAdultes(membres: Membre[]) {
 

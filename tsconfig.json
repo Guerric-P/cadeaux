@@ -1,11 +1,21 @@
 {
     "compilerOptions": {
         "jsx": "react",
-        "lib": ["ESNext", "DOM"],
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
         "target": "ES6",
         "esModuleInterop": true,
         "moduleResolution": "node",
         "module": "ES2020",
-        "types": ["vite/client"]
+        "types": [
+            "vite/client"
+        ],
+        "paths": {
+            "@cadeaux/*": [
+                "./src/*"
+            ]
+        }
     }
 }

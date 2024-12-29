@@ -1,6 +1,6 @@
+import { Membre } from '@cadeaux/model/membre';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Membre } from '../model/membre';
 
 export default (props: { titre: string, resultat: { donneur: Membre, receveur: Membre }[] }) => {
     const { t } = useTranslation();
